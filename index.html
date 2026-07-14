@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>청년, 중년층 맞춤형 건강인지율 및 대사질환 자가진단</title>
+    <style>
+        /* 깔끔하고 신뢰감을 주는 인디고 & 민트 컬러 디자인 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", dotum, sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            margin: 0;
+            padding: 30px 15px;
+            color: #334155;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        }
+        h1 {
+            color: #1e3a8a;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 35px;
+            font-size: 16px;
+        }
+        .setup-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+        }
+        .setup-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .info-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .info-item {
+            flex: 1;
+            min-width: 220px;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            background: #fff;
+            color: #334155;
+            font-weight: bold;
+            outline: none;
+            transition: border 0.2s;
+        }
+        select:focus {
+            border-color: #0ea5e9;
+        }
+        h2 {
+            color: #0f766e;
+            font-size: 22px;
+            border-left: 5px solid #0ea5e9;
+            padding-left: 10px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+        /* 질문 카드 스타일 */
+        .q-card {
+            margin: 20px 0;
+            padding: 22px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .q-card b {
+            font-size: 18px;
+            color: #1e293b;
+            display: block;
+            margin-bottom: 15px;
+        }
+        /* 선택지 가로형 배치 */
+        .options-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .options-wrapper label {
+            display: inline-flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .options-wrapper label:hover {
+            background-color: #f0fdfa;
+            border-color: #99f6e4;
+        }
+        .options-wrapper input[type="radio"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        /* 버튼 스타일 */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #1e3a8a;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
+            margin-top: 40px;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: #1e40af; }
+        
+        /* 결과 화면 스타일 */
+        .result-box {
+            display: none;
+            margin-top: 40px;
+            background: #f0fdfa;
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid #0f766e;
+        }
+        .result-box h3 {
+            margin-top: 0;
+            color: #0f766e;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .score-row {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .badge-safe { background-color: #10b981; }
+        .badge-warn { background-color: #f59e0b; }
+        .badge-danger { background-color: #ef4444; }
+
+        .advice-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .advice-card h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+        .advice-card ul { padding-left: 20px; margin: 0; }
+        .advice-card li { margin-bottom: 8px; }
+        .notice {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #64748b;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎯 맞춤형 건강 자가진단</h1>
+    <p class="subtitle">선택하신 연령대에 특화된 라이프스타일 및 위험 질환 리스크를 분석합니다.</p>
+    
+    <div class="setup-box">
+        <div class="setup-title">■ 대상자 정보 입력</div>
+        <div class="info-group">
+            <div class="info-item">
+                <select id="ageGroup" onchange="loadQuestions()">
+                    <option value="">연령층 선택 (필수)</option>
+                    <option value="youth">청년층 (20대 ~ 30대)</option>
+                    <option value="middle">중장년층 (40대 ~ 60대)</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <select id="genderSelect">
+                    <option value="">성별 선택 (필수)</option>
+                    <option>남성</option>
+                    <option>여성</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="surveySection" style="display:none;">
+        <h2>[파트 1] 주관적 건강 인지율 평점</h2>
+        <div id="healthQuestions"></div>
+
+        <h2>[파트 2] 세대별 주요 위험 징후 점검</h2>
+        <div id="riskQuestions"></div>
+
+        <button class="btn-submit" onclick="calculateResult()">종합 결과 및 예방법 확인하기</button>
+    </div>
+
+    <div id="resultArea" class="result-box"></div>
+</div>
+
+<script>
+// 세대별 맞춤형 문항 데이터베이스
+const questionDB = {
+    youth: {
+        health: [
+            ["현재 자신이 느끼는 전반적인 건강 상태는 어떻습니까?", ["매우 좋음", "좋음", "보통", "나쁨", "매우 나쁨"]],
+            ["바쁜 일상 속에서 규칙적인 운동(주 2~3회 이상)을 실천하십니까?", ["적극 실천", "가끔 실천", "거의 안 함", "전혀 안 함"]],
+            ["배달 음식, 패스트푸드, 액상과당 음료를 섭취하는 빈도는 어떻게 되나요?", ["거의 안 먹음", "주 1~2회", "주 3~4회", "매일 먹음"]],
+            ["하루 평균 7시간 이상의 양질의 수면을 취하고 계십니까?", ["항상 그렇다", "대체로 그렇다", "가끔 부족하다", "늘 부족하다"]]
+        ],
+        risk: [
+            ["충분히 쉬어도 풀리지 않는 극심한 무기력증이나 피로(번아웃)를 느끼십니까?", ["자주 느낀다", "조금 느낀다", "거의 없다"]],
+            ["스마트폰/PC 사용 시 목, 어깨, 손목에 지속적인 통증이나 뻐근함이 있나요?", ["통증이 심함", "가끔 뻐근함", "전혀 없음"]],
+            ["야식이나 불규칙한 식습관으로 인해 최근 1년 내 급격한 체중 변화가 있었나요?", ["많이 늘었음", "약간 늘었음", "변화 없음"]],
+            ["정서적인 불안감, 취업/직장 스트레스로 인한 두통이나 소화불량이 잦습니까?", ["자주 겪음", "어쩌다 겪음", "전혀 없음"]]
+        ]
+    },
+    middle: {
+        health: [
+            ["현재 동년배들과 비교했을 때 자신의 체력이나 기력은 어떻습니까?", ["매우 좋음", "좋음", "보통", "나쁨", "매우 나쁨"]],
+            ["혈압, 혈당, 콜레스테롤 등 정기 국가건강검진 수치를 기억하고 관리하십니까?", ["철저히 관리", "대체로 파악", "신경 안 씀", "검진 안 받음"]],
+            ["기름진 육류 중심 식단을 피하고 채소와 영양소를 골고루 섭취하십니까?", ["매우 잘 챙김", "대체로 잘 챙김", "보통이다", "부실하게 먹음"]],
+            ["과음이나 흡연을 하시는 경우, 스스로 통제 및 절제가 원활하게 되십니까?", ["비흡연/금주함", "절제 잘 됨", "자주 과해짐", "조절 불가"]]
+        ],
+        risk: [
+            ["최근 건강검진에서 혈압 경계 수치 혹은 고혈압 소견을 받은 적이 있으십니까?", ["약 복용/위험", "경계 단계", "정상 범위"]],
+            ["공복 혈당 수치가 높거나, 식후 급격한 식곤증 및 피로감을 자주 느끼십니까?", ["치료/진단 받음", "공복혈당 의심", "정상 상태"]],
+            ["허리둘레가 늘어나는 복부비만(남 90cm, 여 85cm 이상)에 해당하십니까?", ["확연한 비만", "약간 배가 나옴", "정상 체형"]],
+            ["아침에 일어날 때 뒷목이 당기거나 찌르는 듯한 편두통, 어지럼증이 있습니까?", ["자주 있음", "가끔 있음", "전혀 없음"]]
+        ]
+    },
+
+};
+
+// 연령대 선택 시 문항을 화면에 주입하는 함수
+function loadQuestions() {
+    const ageGroup = document.getElementById('ageGroup').value;
+    const surveySection = document.getElementById('surveySection');
+    const hDiv = document.getElementById('healthQuestions');
+    const rDiv = document.getElementById('riskQuestions');
+    
+    if(!ageGroup) {
+        surveySection.style.display = "none";
+        return;
+    }
+    
+    hDiv.innerHTML = "";
+    rDiv.innerHTML = "";
+    const data = questionDB[ageGroup];
+
+    // 파트 1 렌더링 (순서대로 고득점 배치)
+    data.health.forEach((q, i) => {
+        let html = `<div class="q-card"><b>${i + 1}. ${q[0]}</b><div class="options-wrapper">`;
+        q[1].forEach((opt, j) => {
+            html += `<label><input type="radio" name="h${i}" value="${q[1].length - j}"> ${opt}</label>`;
+        });
+        html += `</div></div>`;
+        hDiv.innerHTML += html;
+    });
+
+    // 파트 2 렌더링 (0번 인덱스가 가장 위험하게 배치)
+    data.risk.forEach((q, i) => {
+        let html = `<div class="q-card"><b>${i + 1}. ${q[0]}</b><div class="options-wrapper">`;
+        q[1].forEach((opt, j) => {
+            html += `<label><input type="radio" name="r${i}" value="${q[1].length - j}"> ${opt}</label>`;
+        });
+        html += `</div></div>`;
+        rDiv.innerHTML += html;
+    });
+
+    surveySection.style.display = "block";
+    document.getElementById('resultArea').style.display = "none";
+}
+
+// 결과 계산 및 출력 함수
+function calculateResult() {
+    const ageGroup = document.getElementById('ageGroup').value;
+    if(!document.getElementById('genderSelect').value || !ageGroup) {
+        alert("성별과 연령대를 올바르게 선택해 주세요.");
+        return;
+    }
+
+    let hScore = 0, hMax = 0, rScore = 0, rMax = 0;
+    let isMissing = false;
+    const data = questionDB[ageGroup];
+
+    // 파트 1 점수화
+    data.health.forEach((q, i) => {
+        hMax += q[1].length;
+        let el = document.querySelector(`input[name="h${i}"]:checked`);
+        if(el) hScore += parseInt(el.value);
+        else isMissing = true;
+    });
+
+    // 파트 2 점수화
+    data.risk.forEach((q, i) => {
+        rMax += q[1].length;
+        let el = document.querySelector(`input[name="r${i}"]:checked`);
+        if(el) rScore += parseInt(el.value);
+        else isMissing = true;
+    });
+
+    if(isMissing) {
+        alert("답변하지 않은 질문이 있습니다. 모든 문항을 선택해 주세요.");
+        return;
+    }
+
+    // 통계 점수 환산
+    let hPct = Math.round((hScore / hMax) * 100);
+    let hStatus = hPct >= 80 ? "양호" : hPct >= 55 ? "보통" : "저하";
+    let hBadge = hPct >= 80 ? "badge-safe" : hPct >= 55 ? "badge-warn" : "badge-danger";
+
+    // 리스크 점수 환산 (파트2는 고득점일수록 위험 징후가 높은 설계)
+    let rPct = Math.round((rScore / rMax) * 100);
+    let rStatus = rPct <= 45 ? "안전군" : rPct <= 70 ? "경계/주의" : "위험군 (지속 관리 필요)";
+    let rBadge = rPct <= 45 ? "badge-safe" : rPct <= 70 ? "badge-warn" : "badge-danger";
+
+    // 세대별 예방 피드백 바인딩
+    let adviceText = "";
+    if (ageGroup === "youth") {
+        adviceText = `
+            <div class="advice-card">
+                <h4>🏃 청년층(2030) 건강 리셋 및 예방 가이드</h4>
+                <ul>
+                    <li><b>식습관 교정:</b> 잦은 배달 음식과 액상과당(당류 음료)은 젊은 당뇨 및 혈관 지방 축적의 주범입니다. 주중 가정식 비율을 높이세요.</li>
+                    <li><b>거북목·VDT 증후군 방지:</b> 모니터 받침대를 쓰고 스마트폰을 볼 때 고개를 숙이지 마세요. 50분 집중 후 5분 스트레칭은 필수입니다.</li>
+                    <li><b>피로 및 수면:</b> 취침 전 인스타, 유튜브 등 블루라이트 노출을 최소화하여 깊은 수면(Non-REM) 시간을 확보해야 번아웃을 막을 수 있습니다.</li>
+                </ul>
+            </div>`;
+    } else if (ageGroup === "middle") {
+        adviceText = `
+            <div class="advice-card">
+                <h4>🩺 중장년층(4060) 대사증후군 타파 가이드</h4>
+                <ul>
+                    <li><b>혈관 및 내장지방 차단:</b> 정제 탄수화물(흰쌀, 면, 빵)과 믹스커피 섭취량을 현재의 절반으로 절제하여 복부 비만을 줄여야 합니다.</li>
+                    <li><b>식후 걷기 습관:</b> 식사 후 20~30분 뒤 가벼운 산책을 실행하면 혈당 스파이크를 효과적으로 억제하고 혈압 상승을 예방할 수 있습니다.</li>
+                    <li><b>정기 추적 검사:</b> 고혈압, 당뇨, 고지혈증은 초기 증상이 없습니다. 주기적인 가정 혈압/혈당 측정 및 연 1회 정밀 혈액검사를 소홀히 하지 마세요.</li>
+                </ul>
+            </div>`;
+    }
+
+    // 결과 렌더링
+    const rArea = document.getElementById('resultArea');
+    rArea.style.display = "block";
+    rArea.innerHTML = `
+        <h3>📋 종합 진단 결과 Report</h3>
+        <div class="score-row">
+            <b>나의 주관적 건강 인지율:</b> ${hPct}점 / 100점 
+            <span class="badge ${hBadge}">${hStatus}</span>
+        </div>
+        <div class="score-row">
+            <b>현재 연령대 위험 징후 수준:</b> ${rPct}점 / 100점 
+            <span class="badge ${rBadge}">${rStatus}</span>
+        </div>
+
+        ${adviceText}
+
+        <div class="notice">
+            ※ 본 자가진단은 인구학적 통계 기반의 간이 진단 도구이며 특정 질병에 대한 의학적 소견을 대신할 수 없습니다.<br>
+            ※ 보다 정밀한 혈액검사 및 수치 판정은 국민건강보험공단 무료 건강검진을 적극 이용하시기 바랍니다.
+        </div>
+    `;
+
+    // 결과창 위치로 부드럽게 스크롤
+    window.scrollTo({ top: rArea.offsetTop - 20, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
